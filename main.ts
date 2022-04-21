@@ -1,4 +1,5 @@
 tiles.setCurrentTilemap(tilemap`level1`)
+music.baDing.play()
 let monkey = sprites.create(img`
     . . . . f f f f f . . . . . . . 
     . . . f e e e e e f . . . . . . 
