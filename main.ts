@@ -344,6 +344,10 @@ sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     pause(100)
     boomerang.setPosition(monkey.x, monkey.y)
 })
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    otherSprite.startEffect(effects.disintegrate, 200)
+    otherSprite.destroy()
+})
 let boomerang: Sprite = null
 let monkey: Sprite = null
 tiles.setCurrentTilemap(tilemap`level1`)
@@ -388,6 +392,68 @@ boomerang = sprites.createProjectileFromSprite(img`
     . . . . . . . . . . . . . . . . 
     `, monkey, 50, 50)
 let username = game.askForString("")
+let list = [sprites.create(img`
+    ........................
+    ........................
+    ........................
+    ........................
+    ..........ffff..........
+    ........ff1111ff........
+    .......fb111111bf.......
+    .......f11111111f.......
+    ......fd11111111df......
+    ......fd11111111df......
+    ......fddd1111dddf......
+    ......fbdb2dd2bdbf......
+    ......fcdc2112cdcf......
+    .......fb111111bf.......
+    ......fffcdb1bdffff.....
+    ....fc111cbfbfc111cf....
+    ....f1b1b1ffff1b1b1f....
+    ....fbfbffffffbfbfbf....
+    .........ffffff.........
+    ...........fff..........
+    ........................
+    ........................
+    ........................
+    ........................
+    `, SpriteKind.Enemy), sprites.create(img`
+    . . . c c c c c c . . . . . . . 
+    . . c 6 7 7 7 7 6 c . . . . . . 
+    . c 7 7 7 7 7 7 7 7 c . . . . . 
+    c 6 7 7 7 7 7 7 7 7 6 c . . . . 
+    c 7 c 6 6 6 6 c 7 7 7 c . . . . 
+    f 7 6 2 6 6 2 6 7 7 7 f . . . . 
+    f 7 7 7 7 7 7 7 7 7 7 f . . . . 
+    . f 7 7 7 7 6 c 7 7 6 f . . . . 
+    . . f c c c c 7 7 6 f c c c . . 
+    . . c 6 2 7 7 7 f c c 7 7 7 c . 
+    . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
+    . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
+    . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
+    . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
+    . . c 6 1 1 1 1 1 7 6 6 c c . . 
+    . . . c c c c c c c c c c . . . 
+    `, SpriteKind.Enemy), sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . 3 . . . . . . . . . . . 
+    . . . . 3 . . . . . . 3 3 3 . . 
+    . . . . . 3 . 3 3 3 3 . . . . . 
+    . . . . . 3 . 3 . . . . . . . . 
+    . . . . . . 3 3 . . . . . . . . 
+    . . . . . 3 3 3 . . . . . . . . 
+    . . . . 3 . 3 3 3 . . . . . . . 
+    . . . 3 . . 3 3 3 . . . . . . . 
+    . . 3 . 3 3 . . . 3 . . 3 3 . . 
+    . 3 3 3 . 3 3 3 3 3 3 3 . . . . 
+    . 3 . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Enemy)]
+let Enemy1 = list[randint(0, 2)]
+Enemy1.setPosition(monkey.x, monkey.y)
 forever(function () {
     monkey.sayText(username)
 })
