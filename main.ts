@@ -347,7 +347,6 @@ sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
 let boomerang: Sprite = null
 let monkey: Sprite = null
 tiles.setCurrentTilemap(tilemap`level1`)
-music.baDing.play()
 monkey = sprites.create(img`
     . . . . f f f f f . . . . . . . 
     . . . f e e e e e f . . . . . . 
