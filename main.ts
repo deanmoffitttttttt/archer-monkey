@@ -213,16 +213,85 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+function Create_enemy () {
+    Ghost = sprites.create(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .......f11111111f.......
+        ......fd11111111df......
+        ......fd11111111df......
+        ......fddd1111dddf......
+        ......fbdb2dd2bdbf......
+        ......fcdc2112cdcf......
+        .......fb111111bf.......
+        ......fffcdb1bdffff.....
+        ....fc111cbfbfc111cf....
+        ....f1b1b1ffff1b1b1f....
+        ....fbfbffffffbfbfbf....
+        .........ffffff.........
+        ...........fff..........
+        ........................
+        ........................
+        ........................
+        ........................
+        `, SpriteKind.Enemy)
+    blob = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . 3 . . . . . . . . . . . 
+        . . . . 3 . . . . . . 3 3 3 . . 
+        . . . . . 3 . 3 3 3 3 . . . . . 
+        . . . . . 3 . 3 . . . . . . . . 
+        . . . . . . 3 3 . . . . . . . . 
+        . . . . . 3 3 3 . . . . . . . . 
+        . . . . 3 . 3 3 3 . . . . . . . 
+        . . . 3 . . 3 3 3 . . . . . . . 
+        . . 3 . 3 3 . . . 3 . . 3 3 . . 
+        . 3 3 3 . 3 3 3 3 3 3 3 . . . . 
+        . 3 . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Enemy)
+    Snake = sprites.create(img`
+        . . . c c c c c c . . . . . . . 
+        . . c 6 7 7 7 7 6 c . . . . . . 
+        . c 7 7 7 7 7 7 7 7 c . . . . . 
+        c 6 7 7 7 7 7 7 7 7 6 c . . . . 
+        c 7 c 6 6 6 6 c 7 7 7 c . . . . 
+        f 7 6 2 6 6 2 6 7 7 7 f . . . . 
+        f 7 7 7 7 7 7 7 7 7 7 f . . . . 
+        . f 7 7 7 7 6 c 7 7 6 f . . . . 
+        . . f c c c c 7 7 6 f c c c . . 
+        . . c 6 2 7 7 7 f c c 7 7 7 c . 
+        . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
+        . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
+        . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
+        . . c 6 1 1 1 1 1 7 6 6 c c . . 
+        . . . c c c c c c c c c c . . . 
+        `, SpriteKind.Enemy)
+    tiles.placeOnRandomTile(Ghost, sprites.dungeon.floorDarkDiamond)
+    tiles.placeOnRandomTile(blob, sprites.dungeon.floorDarkDiamond)
+    tiles.placeOnRandomTile(Snake, sprites.dungeon.floorDarkDiamond)
+}
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Enemy, function (sprite, otherSprite) {
+    tiles.placeOnRandomTile(sprite, sprites.dungeon.floorDarkDiamond)
+})
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, monkey)
 })
 controller.left.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, monkey)
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
-    tiles.setTileAt(location, sprites.dungeon.chestOpen)
-    info.changeScoreBy(5)
-    scene.cameraShake(2, 200)
+sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
+    pause(100)
+    boomerang.setPosition(monkey.x, monkey.y)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -334,85 +403,32 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.stairEast, function (sprite, location) {
+    tiles.setTileAt(location, sprites.dungeon.stairWest)
+    info.changeScoreBy(1)
+})
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
     controller.moveSprite(monkey, 75, 75)
     boomerang.destroy()
     effects.clearParticles(boomerang)
     scene.cameraShake(3, 200)
 })
-function doSomething (list: any[]) {
-    mySprite = sprites.create(img`
-        ........................
-        ........................
-        ........................
-        ........................
-        ..........ffff..........
-        ........ff1111ff........
-        .......fb111111bf.......
-        .......f11111111f.......
-        ......fd11111111df......
-        ......fd11111111df......
-        ......fddd1111dddf......
-        ......fbdb2dd2bdbf......
-        ......fcdc2112cdcf......
-        .......fb111111bf.......
-        ......fffcdb1bdffff.....
-        ....fc111cbfbfc111cf....
-        ....f1b1b1ffff1b1b1f....
-        ....fbfbffffffbfbfbf....
-        .........ffffff.........
-        ...........fff..........
-        ........................
-        ........................
-        ........................
-        ........................
-        `, SpriteKind.Enemy)
-    mySprite = sprites.create(img`
-        . . . c c c c c c . . . . . . . 
-        . . c 6 7 7 7 7 6 c . . . . . . 
-        . c 7 7 7 7 7 7 7 7 c . . . . . 
-        c 6 7 7 7 7 7 7 7 7 6 c . . . . 
-        c 7 c 6 6 6 6 c 7 7 7 c . . . . 
-        f 7 6 2 6 6 2 6 7 7 7 f . . . . 
-        f 7 7 7 7 7 7 7 7 7 7 f . . . . 
-        . f 7 7 7 7 6 c 7 7 6 f . . . . 
-        . . f c c c c 7 7 6 f c c c . . 
-        . . c 6 2 7 7 7 f c c 7 7 7 c . 
-        . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
-        . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
-        . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
-        . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
-        . . c 6 1 1 1 1 1 7 6 6 c c . . 
-        . . . c c c c c c c c c c . . . 
-        `, SpriteKind.Enemy)
-    mySprite = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . 3 . . . . . . . . . . . 
-        . . . . 3 . . . . . . 3 3 3 . . 
-        . . . . . 3 . 3 3 3 3 . . . . . 
-        . . . . . 3 . 3 . . . . . . . . 
-        . . . . . . 3 3 . . . . . . . . 
-        . . . . . 3 3 3 . . . . . . . . 
-        . . . . 3 . 3 3 3 . . . . . . . 
-        . . . 3 . . 3 3 3 . . . . . . . 
-        . . 3 . 3 3 . . . 3 . . 3 3 . . 
-        . 3 3 3 . 3 3 3 3 3 3 3 . . . . 
-        . 3 . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Enemy)
-}
-sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
-    pause(100)
-    boomerang.setPosition(monkey.x, monkey.y)
+scene.onOverlapTile(SpriteKind.Enemy, sprites.dungeon.floorDarkDiamond, function (sprite, location) {
+    tiles.setTileAt(location, sprites.dungeon.floorDark4)
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
+    tiles.setTileAt(location, sprites.dungeon.chestOpen)
+    info.changeScoreBy(5)
+    scene.cameraShake(2, 200)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.startEffect(effects.disintegrate, 200)
     otherSprite.destroy()
+    info.changeScoreBy(2)
 })
-let mySprite: Sprite = null
+let Snake: Sprite = null
+let blob: Sprite = null
+let Ghost: Sprite = null
 let boomerang: Sprite = null
 let monkey: Sprite = null
 tiles.setCurrentTilemap(tilemap`level1`)
@@ -456,71 +472,8 @@ boomerang = sprites.createProjectileFromSprite(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, monkey, 50, 50)
-let username = game.askForString("")
-let list = [sprites.create(img`
-    ........................
-    ........................
-    ........................
-    ........................
-    ..........ffff..........
-    ........ff1111ff........
-    .......fb111111bf.......
-    .......f11111111f.......
-    ......fd11111111df......
-    ......fd11111111df......
-    ......fddd1111dddf......
-    ......fbdb2dd2bdbf......
-    ......fcdc2112cdcf......
-    .......fb111111bf.......
-    ......fffcdb1bdffff.....
-    ....fc111cbfbfc111cf....
-    ....f1b1b1ffff1b1b1f....
-    ....fbfbffffffbfbfbf....
-    .........ffffff.........
-    ...........fff..........
-    ........................
-    ........................
-    ........................
-    ........................
-    `, SpriteKind.Enemy), sprites.create(img`
-    . . . c c c c c c . . . . . . . 
-    . . c 6 7 7 7 7 6 c . . . . . . 
-    . c 7 7 7 7 7 7 7 7 c . . . . . 
-    c 6 7 7 7 7 7 7 7 7 6 c . . . . 
-    c 7 c 6 6 6 6 c 7 7 7 c . . . . 
-    f 7 6 2 6 6 2 6 7 7 7 f . . . . 
-    f 7 7 7 7 7 7 7 7 7 7 f . . . . 
-    . f 7 7 7 7 6 c 7 7 6 f . . . . 
-    . . f c c c c 7 7 6 f c c c . . 
-    . . c 6 2 7 7 7 f c c 7 7 7 c . 
-    . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
-    . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
-    . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
-    . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
-    . . c 6 1 1 1 1 1 7 6 6 c c . . 
-    . . . c c c c c c c c c c . . . 
-    `, SpriteKind.Enemy), sprites.create(img`
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . 3 . . . . . . . . . . . 
-    . . . . 3 . . . . . . 3 3 3 . . 
-    . . . . . 3 . 3 3 3 3 . . . . . 
-    . . . . . 3 . 3 . . . . . . . . 
-    . . . . . . 3 3 . . . . . . . . 
-    . . . . . 3 3 3 . . . . . . . . 
-    . . . . 3 . 3 3 3 . . . . . . . 
-    . . . 3 . . 3 3 3 . . . . . . . 
-    . . 3 . 3 3 . . . 3 . . 3 3 . . 
-    . 3 3 3 . 3 3 3 3 3 3 3 . . . . 
-    . 3 . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    `, SpriteKind.Enemy)]
-let Enemy1 = list[randint(0, 2)]
-tiles.placeOnRandomTile(Enemy1, sprites.dungeon.floorDarkDiamond)
-tiles.placeOnRandomTile(Enemy1, sprites.dungeon.floorDarkDiamond)
-tiles.placeOnRandomTile(Enemy1, sprites.dungeon.floorDarkDiamond)
+Create_enemy()
 forever(function () {
+    let username = 0
     monkey.sayText(username)
 })
