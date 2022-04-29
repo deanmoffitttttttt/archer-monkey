@@ -279,9 +279,13 @@ function Create_enemy () {
     tiles.placeOnRandomTile(Ghost, sprites.dungeon.floorDarkDiamond)
     tiles.placeOnRandomTile(blob, sprites.dungeon.floorDarkDiamond)
     tiles.placeOnRandomTile(Snake, sprites.dungeon.floorDarkDiamond)
+    tiles.placeOnRandomTile(Ghost, sprites.dungeon.darkGroundNorthWest1)
+    tiles.placeOnRandomTile(blob, sprites.dungeon.darkGroundNorthWest1)
+    tiles.placeOnRandomTile(Snake, sprites.dungeon.darkGroundNorthWest1)
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Enemy, function (sprite, otherSprite) {
     tiles.placeOnRandomTile(sprite, sprites.dungeon.floorDarkDiamond)
+    tiles.placeOnRandomTile(sprite, sprites.dungeon.darkGroundNorthWest1)
 })
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, monkey)
@@ -289,9 +293,10 @@ controller.right.onEvent(ControllerButtonEvent.Released, function () {
 controller.left.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, monkey)
 })
-sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
-    pause(100)
-    boomerang.setPosition(monkey.x, monkey.y)
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
+    tiles.setTileAt(location, sprites.dungeon.chestOpen)
+    info.changeScoreBy(5)
+    scene.cameraShake(2, 200)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -406,6 +411,12 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.stairEast, function (sprite, location) {
     tiles.setTileAt(location, sprites.dungeon.stairWest)
     info.changeScoreBy(1)
+    if (info.score() >= 12) {
+        tiles.setCurrentTilemap(tilemap`level4`)
+        Create_enemy()
+    } else {
+        game.over(false)
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
     controller.moveSprite(monkey, 75, 75)
@@ -416,10 +427,9 @@ controller.A.onEvent(ControllerButtonEvent.Released, function () {
 scene.onOverlapTile(SpriteKind.Enemy, sprites.dungeon.floorDarkDiamond, function (sprite, location) {
     tiles.setTileAt(location, sprites.dungeon.floorDark4)
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
-    tiles.setTileAt(location, sprites.dungeon.chestOpen)
-    info.changeScoreBy(5)
-    scene.cameraShake(2, 200)
+sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
+    pause(100)
+    boomerang.setPosition(monkey.x, monkey.y)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.startEffect(effects.disintegrate, 200)
@@ -472,8 +482,11 @@ boomerang = sprites.createProjectileFromSprite(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, monkey, 50, 50)
+let username = game.askForString("")
 Create_enemy()
 forever(function () {
-    let username = 0
     monkey.sayText(username)
+    if (info.score() >= 21) {
+        game.over(true, effects.starField)
+    }
 })
