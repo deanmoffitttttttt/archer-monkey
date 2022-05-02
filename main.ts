@@ -1,3 +1,8 @@
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorLockedNorth, function (sprite, location) {
+    tiles.setTileAt(location, sprites.dungeon.floorDark1)
+    speed += -25
+    controller.moveSprite(monkey, speed, speed)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     boomerang = sprites.createProjectileFromSprite(img`
         . . . . . . . . . . . . . . . . 
@@ -298,6 +303,11 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sp
     info.changeScoreBy(5)
     scene.cameraShake(2, 200)
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorLockedSouth, function (sprite, location) {
+    tiles.setTileAt(location, sprites.dungeon.floorDark1)
+    speed += -25
+    controller.moveSprite(monkey, speed, speed)
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     monkey,
@@ -411,7 +421,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.stairEast, function (sprite, location) {
     tiles.setTileAt(location, sprites.dungeon.stairWest)
     info.changeScoreBy(1)
-    if (info.score() >= 12) {
+    if (info.score() >= 12 && enemykilled == 3) {
         tiles.setCurrentTilemap(tilemap`level4`)
         Create_enemy()
     } else {
@@ -419,7 +429,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.stairEast, function (spri
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
-    controller.moveSprite(monkey, 75, 75)
+    controller.moveSprite(monkey, speed, speed)
     boomerang.destroy()
     effects.clearParticles(boomerang)
     scene.cameraShake(3, 200)
@@ -435,11 +445,17 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
     otherSprite.startEffect(effects.disintegrate, 200)
     otherSprite.destroy()
     info.changeScoreBy(2)
+    enemykilled += 1
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    game.over(false, effects.melt)
 })
 let Snake: Sprite = null
 let blob: Sprite = null
 let Ghost: Sprite = null
+let enemykilled = 0
 let boomerang: Sprite = null
+let speed = 0
 let monkey: Sprite = null
 tiles.setCurrentTilemap(tilemap`level1`)
 monkey = sprites.create(img`
@@ -462,6 +478,7 @@ monkey = sprites.create(img`
     `, SpriteKind.Player)
 monkey.setPosition(23, 135)
 controller.moveSprite(monkey, 100, 100)
+speed = 100
 scene.cameraFollowSprite(monkey)
 monkey.setStayInScreen(false)
 boomerang = sprites.createProjectileFromSprite(img`
@@ -482,11 +499,16 @@ boomerang = sprites.createProjectileFromSprite(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, monkey, 50, 50)
-let username = game.askForString("")
+let username = game.askForString("Catchphrase", 24)
+game.splash("Get Enough Points to move on, BEWARE")
 Create_enemy()
+enemykilled = 0
 forever(function () {
     monkey.sayText(username)
-    if (info.score() >= 21) {
+    if (info.score() >= 21 && enemykilled == 6) {
         game.over(true, effects.starField)
+    }
+    if (speed <= 0) {
+        speed = 5
     }
 })
